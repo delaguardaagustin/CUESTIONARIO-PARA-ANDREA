@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cuestionario TO — Integración Sensorial y Juego</title>
 <style>
   :root{
@@ -118,7 +123,33 @@
     cursor:pointer; padding:0; text-decoration:underline;
   }
   footer{margin-top:40px; color:var(--ink-soft); font-size:12.5px; border-top:1px solid var(--line); padding-top:18px;}
+
+  @media (max-width:600px){
+    .wrap{padding:20px 14px 72px;}
+    .top{gap:8px; padding-bottom:20px; margin-bottom:20px;}
+    .subtitle{font-size:14.5px;}
+    .statbar{gap:10px;}
+    .stat{min-width:0; flex:1 1 30%; padding:8px 10px;}
+    .stat b{font-size:18px;}
+    .stat span{font-size:10.5px;}
+    .controls{flex-direction:column;}
+    .controls button.ctl{width:100%;}
+    .block-head h2{font-size:19px;}
+    .card{padding:14px 14px 12px; margin-bottom:12px; border-radius:10px;}
+    .qhead{gap:8px;}
+    .qtext{font-size:14.5px;}
+    .opts{margin-left:0; margin-top:2px;}
+    .opt{padding:10px; font-size:14px;}
+    .why{margin-left:0;}
+    .qfoot{margin-left:0;}
+    nav.toc a{font-size:12.5px;}
+  }
+  @media (max-width:360px){
+    .stat{flex:1 1 100%;}
+  }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <div class="top">
@@ -388,3 +419,5 @@ document.querySelectorAll('.revealBtn').forEach(btn => {
   });
 });
 </script>
+</body>
+</html>
