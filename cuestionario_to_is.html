@@ -1,0 +1,390 @@
+<title>Cuestionario TO — Integración Sensorial y Juego</title>
+<style>
+  :root{
+    --paper:#EEF1EF; --paper-raised:#FFFFFF; --ink:#172524; --ink-soft:#4B5A58;
+    --line:#D8DED9; --accent:#1D6F76; --accent-warm:#B9791E;
+    --good:#2E7D4F; --good-bg:#E4F3E9; --bad:#B3423F; --bad-bg:#FBEAE9;
+    --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#10181A; --paper-raised:#172223; --ink:#E7EEEC; --ink-soft:#9FB0AD;
+      --line:#24322F; --accent:#5FC9C1; --accent-warm:#E0A94E;
+      --good:#69CB93; --good-bg:#173021; --bad:#E2827E; --bad-bg:#34191A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#10181A; --paper-raised:#172223; --ink:#E7EEEC; --ink-soft:#9FB0AD;
+    --line:#24322F; --accent:#5FC9C1; --accent-warm:#E0A94E;
+    --good:#69CB93; --good-bg:#173021; --bad:#E2827E; --bad-bg:#34191A;
+  }
+  :root[data-theme="light"]{
+    --paper:#EEF1EF; --paper-raised:#FFFFFF; --ink:#172524; --ink-soft:#4B5A58;
+    --line:#D8DED9; --accent:#1D6F76; --accent-warm:#B9791E;
+    --good:#2E7D4F; --good-bg:#E4F3E9; --bad:#B3423F; --bad-bg:#FBEAE9;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.5; margin:0;}
+  .wrap{max-width:1180px; margin:0 auto; padding:32px 20px 96px;}
+  .top{
+    display:flex; flex-direction:column; gap:10px; padding-bottom:28px; margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent-warm); font-weight:600;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(28px,4vw,40px);
+    margin:2px 0 4px; text-wrap:balance; letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--ink-soft); font-size:15.5px; max-width:70ch;}
+  .sources{
+    display:flex; flex-wrap:wrap; gap:6px 10px; margin-top:6px; font-family:var(--font-mono); font-size:12px; color:var(--ink-soft);
+  }
+  .sources span{white-space:nowrap;}
+  .sources span::after{content:"·"; margin-left:10px; color:var(--line);}
+  .sources span:last-child::after{content:none;}
+  .statbar{
+    display:flex; gap:24px; flex-wrap:wrap; margin-top:18px;
+  }
+  .stat{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:10px 16px; min-width:120px;
+  }
+  .stat b{display:block; font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-size:22px; color:var(--accent);}
+  .stat span{font-size:12px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+  .controls{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+  button.ctl{
+    font-family:var(--font-body); font-size:13.5px; font-weight:600; color:var(--ink);
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:8px; padding:8px 14px; cursor:pointer;
+  }
+  button.ctl:hover{border-color:var(--accent);}
+  button.ctl:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .layout{display:grid; grid-template-columns:230px 1fr; gap:44px; align-items:start;}
+  @media (max-width:860px){ .layout{grid-template-columns:1fr;} }
+
+  nav.toc{
+    position:sticky; top:20px; display:flex; flex-direction:column; gap:2px;
+    border-left:2px solid var(--line); padding-left:14px;
+  }
+  @media (max-width:860px){
+    nav.toc{position:static; border-left:none; padding-left:0; flex-direction:row; overflow-x:auto; gap:8px; padding-bottom:8px; border-bottom:1px solid var(--line);}
+  }
+  nav.toc a{
+    font-size:13px; color:var(--ink-soft); text-decoration:none; padding:6px 4px; border-radius:6px; white-space:nowrap;
+  }
+  nav.toc a:hover{color:var(--accent);}
+  nav.toc a b{font-family:var(--font-mono); color:var(--accent-warm); margin-right:6px;}
+
+  section.block{margin-bottom:52px; scroll-margin-top:20px;}
+  .block-head{display:flex; align-items:baseline; gap:12px; margin-bottom:6px; flex-wrap:wrap;}
+  .block-num{font-family:var(--font-mono); color:var(--accent-warm); font-size:14px;}
+  .block-head h2{font-family:var(--font-display); font-size:22px; margin:0; font-weight:600;}
+  .block-meta{color:var(--ink-soft); font-size:13px; font-family:var(--font-mono); margin-bottom:20px;}
+
+  .card{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px 16px; margin-bottom:14px;
+  }
+  .qhead{display:flex; gap:10px; align-items:baseline; margin-bottom:10px;}
+  .qnum{font-family:var(--font-mono); color:var(--accent); font-size:13px; flex-shrink:0; padding-top:2px;}
+  .qtext{font-size:15.5px; font-weight:600; text-wrap:balance;}
+  .opts{display:flex; flex-direction:column; gap:8px; margin-left:26px;}
+  .opt{
+    display:flex; gap:10px; align-items:flex-start; text-align:left; width:100%;
+    background:transparent; border:1px solid var(--line); border-radius:8px; padding:9px 12px;
+    color:var(--ink); font-family:var(--font-body); font-size:14.5px; cursor:pointer;
+  }
+  .opt:hover{border-color:var(--accent);}
+  .opt:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .opt .let{font-family:var(--font-mono); color:var(--ink-soft); flex-shrink:0;}
+  .opt.correct{background:var(--good-bg); border-color:var(--good);}
+  .opt.correct .let{color:var(--good);}
+  .opt.wrong{background:var(--bad-bg); border-color:var(--bad);}
+  .opt.wrong .let{color:var(--bad);}
+  .opt[disabled]{cursor:default;}
+  .why{
+    margin:12px 0 2px 26px; padding:10px 12px; border-left:3px solid var(--accent);
+    background:transparent; font-size:13.5px; color:var(--ink-soft); display:none;
+  }
+  .why.show{display:block;}
+  .why b{color:var(--ink);}
+  .qfoot{margin-left:26px; margin-top:8px;}
+  .qfoot button{
+    font-family:var(--font-mono); font-size:12px; color:var(--accent); background:none; border:none;
+    cursor:pointer; padding:0; text-decoration:underline;
+  }
+  footer{margin-top:40px; color:var(--ink-soft); font-size:12.5px; border-top:1px solid var(--line); padding-top:18px;}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <span class="eyebrow">Terapia Ocupacional · Preparación de examen</span>
+    <h1>Cuestionario — Psicomotricidad, Integración Sensorial y Juego</h1>
+    <p class="subtitle">116 preguntas de opción múltiple (4 alternativas), organizadas por documento fuente. Cada pregunta revela la respuesta correcta y una breve justificación al seleccionar una alternativa.</p>
+    <div class="sources" id="sourcesList"></div>
+    <div class="statbar">
+      <div class="stat"><b id="stAnswered">0</b><span>Respondidas</span></div>
+      <div class="stat"><b id="stCorrect">0</b><span>Correctas</span></div>
+      <div class="stat"><b id="stTotal">0</b><span>Total preguntas</span></div>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="btnRevealAll">Mostrar todas las respuestas</button>
+      <button class="ctl" id="btnReset">Reiniciar cuestionario</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" id="toc"></nav>
+    <main id="main"></main>
+  </div>
+
+  <footer>Banco de preguntas generado a partir de 8 documentos de la asignatura (extraídos íntegramente). Autoevaluación de estudio — verificá siempre contra el apunte original ante cualquier duda.</footer>
+</div>
+
+<script>
+const DATA = [
+{ id:"juego", title:"Juego — Ocupación más importante del infante", meta:"L. Troncoso · 10 preguntas", items:[
+ {q:"Según la definición dada en el documento, ¿cuál de los siguientes elementos NO forma parte de la definición de \"juego\"?", opts:["Diversión","Ejercicio","Sometido a ciertas reglas","Debe practicarse siempre en soledad"], correct:3, why:"La definición textual habla de acción, diversión, ejercicio, carácter recreativo y reglas con resultado de ganar/perder; no menciona la soledad."},
+ {q:"El juego y la autonomía en AVD se describen en el documento como:", opts:["Ocupaciones centrales para el desarrollo integral","Actividades secundarias sin relación con la inclusión","Exclusivas de la etapa preescolar","Ocupaciones opuestas entre sí"], correct:0, why:"El documento las presenta como ocupaciones centrales que favorecen participación social, inclusión escolar y construcción de identidad."},
+ {q:"¿Cuáles son las dimensiones del juego listadas explícitamente en la diapositiva 5?", opts:["Sensorial-Motor, Simbólico, Creativo, Social","Físico, Mental, Emocional, Espiritual","Individual, Grupal, Dirigido, Libre","Táctil, Visual, Auditivo, Vestibular"], correct:0, why:"El documento enumera exactamente estas cuatro dimensiones del juego."},
+ {q:"El juego es calificado explícitamente en el documento como \"predictor de...\"", opts:["Autonomía futura","Rendimiento académico","Coeficiente intelectual","Desarrollo del lenguaje"], correct:0, why:"La diapositiva 6 señala textualmente que el juego \"es predictor de autonomía futura\"."},
+ {q:"¿Cuál de las siguientes NO es una de las formas de incluir el juego en la rehabilitación mencionadas en el documento?", opts:["Como medio de RH","Como premio por hacer algo","Como fin en sí mismo / capacidad a desarrollar","Como evaluación diagnóstica estandarizada"], correct:3, why:"El documento lista 4 formas (medio de RH, medio para desarrollar habilidades, premio, fin en sí mismo), no una evaluación estandarizada."},
+ {q:"¿Cuál de los siguientes NO es uno de los factores que determinan cómo se incluye el juego en la intervención?", opts:["El marco de referencia del terapeuta","Los valores de la familia","La valoración que el entorno da al juego","El nivel socioeconómico del país"], correct:3, why:"Los 4 factores listados son: marco de referencia del terapeuta, énfasis institucional, valores familiares y valoración del entorno."},
+ {q:"Entre los canales por los que el terapeuta debe poder expresar juego, ¿cuál NO se menciona?", opts:["Expresiones faciales","Lenguaje oral","Lenguaje físico/corporal","Escritura terapéutica formal"], correct:3, why:"El documento menciona expresiones faciales, lenguaje oral y lenguaje físico como los tres canales de expresión lúdica del terapeuta."},
+ {q:"Según las características de la experiencia de juego listadas, esta se enfoca en:", opts:["El producto final obtenido","El proceso, no el producto","La competencia entre pares","La evaluación de resultados"], correct:1, why:"Es una de las 7 características explícitas: la experiencia de juego se centra en disfrutar el proceso, no el producto."},
+ {q:"¿Qué autor citado en la bibliografía se asocia al concepto de \"Playfulness\"?", opts:["Jean Ayres","Bundy, A. C.","Winnie Dunn","Jean Piaget"], correct:1, why:"Bundy (2020) es citada por el artículo 'Playfulness: Its relationship to play and occupational therapy'."},
+ {q:"La relación entre juego y autonomía en AVD se describe en el documento como:", opts:["Unidireccional (solo el juego produce autonomía)","Inexistente","Una retroalimentación positiva y bidireccional entre ambas ocupaciones","Negativa o competitiva"], correct:2, why:"El texto es explícito: existe 'retroalimentación positiva entre ambas ocupaciones', es decir, una relación circular, no unidireccional."}
+]},
+{ id:"apoyos", title:"Apoyos y Estrategias en PSM e IS", meta:"L. Troncoso · 8 preguntas", items:[
+ {q:"Según la clasificación tripartita del documento, ¿cuáles son los 3 tipos de apoyos educativos psicomotores y sensoriales?", opts:["Generales/universales, específicos, adaptaciones contextuales","Físicos, cognitivos, emocionales","Escolares, familiares, comunitarios","Visuales, auditivos, táctiles"], correct:0, why:"El Bloque B del índice define exactamente esta clasificación de tres niveles."},
+ {q:"Los apoyos \"generales o universales\" se caracterizan por:", opts:["Estar dirigidos a un diagnóstico específico","Beneficiar a todo el estudiantado (rampas, señalética, parques inclusivos)","Requerir siempre tecnología asistiva individual","Aplicarse solo en el hogar"], correct:1, why:"Son medidas de accesibilidad y diseño que benefician a todo el curso/establecimiento, no solo a un diagnóstico puntual."},
+ {q:"Los \"apoyos específicos\" del documento están orientados a:", opts:["Trastornos sensoriales, motrices o de aprendizaje puntuales","La arquitectura general del establecimiento","El mobiliario de toda el aula","La comunidad en general"], correct:0, why:"Se definen como apoyos para trastornos puntuales (ej. tecnología asistiva, audífonos, pictogramas)."},
+ {q:"Las \"adaptaciones contextuales en el aula\" incluyen como ejemplo explícito:", opts:["Rampas de acceso al edificio","Mobiliario adaptado y ajustes en las actividades","Circuitos psicomotores para todo el curso","Señalética en la vía pública"], correct:1, why:"Se ejemplifican con plano inclinado, mesas ajustables en altura y disposición espacial del aula."},
+ {q:"En el caso clínico del trabajo grupal propuesto, ¿qué curso y condición se especifica para el alumno/a?", opts:["3° básico, con NEE","Kínder, con TEA","8° básico, sin diagnóstico","1° medio, con discapacidad motora"], correct:0, why:"La consigna especifica una escuela especial y un alumno/a de 3° básico con Necesidades Educativas Especiales (NEE)."},
+ {q:"¿Cuál de los siguientes recursos NO aparece entre los materiales de estimulación sensorial (\"busy boards\") mostrados?", opts:["Pop-its / tubos sensoriales","Tablero con cordones para atar","Ábaco y xilófono","Software de realidad virtual"], correct:3, why:"Los ejemplos son todos materiales físicos analógicos; no se menciona ningún software o dispositivo de realidad virtual."},
+ {q:"Los ejemplos de motricidad fina mostrados en la diapositiva de técnicas de PSM incluyen:", opts:["Enhebrado de fideos y tarjetas de lacing","Carreras de velocidad","Lanzamiento de balón","Salto en un pie"], correct:0, why:"Se ilustran actividades de motricidad fina: ensartado, lacing cards, geoboard y trazado."},
+ {q:"Entre los apoyos tecnológicos mostrados para barreras psicomotrices se incluye:", opts:["Tablet con lápiz óptico y audífonos para sensibilidad auditiva","Manuales impresos únicamente","Exámenes orales exclusivamente","Prohibición de tecnología en el aula"], correct:0, why:"La diapositiva muestra tablets con stylus, lupas y audífonos como apoyos tecnológicos y sensoriales."}
+]},
+{ id:"intro-psm", title:"Introducción a la Psicomotricidad e Integración Sensorial", meta:"Programa de asignatura · 8 preguntas", items:[
+ {q:"¿Cuál es la metodología activa declarada como central para esta asignatura?", opts:["Estudio de caso","Clase magistral únicamente","Aprendizaje basado en proyectos de ingeniería","Exámenes orales semanales"], correct:0, why:"El programa declara explícitamente el estudio de caso como metodología activa central."},
+ {q:"Según la estructura de evaluación, ¿qué porcentaje corresponde al Examen final?", opts:["14%","17,5%","21%","30%"], correct:3, why:"El examen de la semana 18 equivale al 30% de la nota final; el resto (EPE1+EPE2+EPE3+EVA) conforma el otro 70%."},
+ {q:"Las 4 etapas del ciclo vital usadas consistentemente en el programa son:", opts:["Infancia, adolescencia, adultez, adultez mayor","Prenatal, neonatal, infancia, adultez","Infancia temprana, media, tardía, adolescencia","Niñez, pubertad, adultez, senectud"], correct:0, why:"El programa organiza contenidos y estrategias según estas cuatro etapas del ciclo vital."},
+ {q:"Según la Unidad 3, ¿cuáles son los ejemplos citados de alteraciones motoras?", opts:["Hipotonicidad, hipertonicidad, dispraxia","Afasia, apraxia, agnosia","Miopía, hipoacusia, anosmia","Bulimia, anorexia, insomnio"], correct:0, why:"Se citan explícitamente como ejemplos de alteraciones motoras gruesas/finas y de coordinación."},
+ {q:"¿Qué enfoque terapéutico específico se menciona como aplicación de estrategias de integración sensorial?", opts:["Ayres Sensory Integration® (ASI)","Terapia Cognitivo-Conductual","Psicoanálisis infantil","Terapia Gestalt"], correct:0, why:"Es la única mención directa a un enfoque terapéutico nombrado, ligado al legado de Jean Ayres."},
+ {q:"¿Cuáles son los 3 sistemas de procesamiento sensorial mencionados explícitamente en la Unidad 3 (3.1)?", opts:["Táctil, vestibular, propioceptivo","Visual, auditivo, gustativo","Olfativo, interoceptivo, kinestésico","Central, periférico, autónomo"], correct:0, why:"El sub-resultado 3.1 los lista como los tres sistemas de referencia para las barreras sensoriales."},
+ {q:"¿Cuáles son los 3 tipos de factores contextuales analizados en el sub-resultado 3.2?", opts:["Físico, social y cultural, pedagógico","Económico, político, religioso","Genético, ambiental, conductual","Familiar, escolar, virtual"], correct:0, why:"El programa distingue contexto físico, contexto social/cultural y contexto pedagógico."},
+ {q:"Según la bibliografía básica del programa, ¿quién escribió \"La psicomotricidad en la escuela: una práctica preventiva y educativa\"?", opts:["Arnaiz, P.","Lleixà, T.","Ayres, A. J.","Bundy, A. C."], correct:0, why:"Arnaiz (2008) figura como primer título de la bibliografía básica del programa."}
+]},
+{ id:"accesibilidad", title:"Accesibilidad en el Espacio Público (Capítulo II)", meta:"Manual de Accesibilidad Universal · 18 preguntas", items:[
+ {q:"¿Cuál es el ancho mínimo de la franja de circulación de una vereda que permite el paso de una silla de ruedas con espacio para girar 360°?", opts:["90 cm","120 cm","150 cm","200 cm"], correct:2, why:"150 cm permite el paso de una silla de ruedas y espacio de giro completo; 200 cm permite el cruce simultáneo de dos sillas."},
+ {q:"¿Cuál es la altura libre mínima que deben respetar los obstáculos sobre la vereda (ramas, toldos, publicidad)?", opts:["180 cm","190 cm","210 cm","250 cm"], correct:2, why:"210 cm es la altura libre mínima reiterada en el manual para cualquier elemento volado."},
+ {q:"La pendiente transversal máxima permitida en una vereda es:", opts:["1%","2%","5%","8%"], correct:1, why:"El manual fija el 2% como pendiente transversal máxima de la vereda."},
+ {q:"En un cruce peatonal rebajado, la diferencia de nivel entre vereda y calzada debe ser:", opts:["Máximo 2 cm","Igual a cero","Máximo 5 cm","No está normada"], correct:1, why:"El manual exige cota cero: ningún desnivel debe interrumpir la circulación en el rebaje."},
+ {q:"¿Cuál es el rango de pendiente recomendado para un cruce peatonal rebajado?", opts:["2 a 4%","5 a 7%","8 a 12%","15 a 20%"], correct:2, why:"El manual recomienda una pendiente de 8 a 12% para los rebajes de cruce peatonal."},
+ {q:"¿Cuál es el ancho mínimo de un rebaje de vereda cuando no coincide con una demarcación de cruce existente?", opts:["90 cm","100 cm","120 cm","150 cm"], correct:2, why:"120 cm es el ancho mínimo exigido en ese caso, y se repite en los 4 tipos de rebaje ilustrados."},
+ {q:"Una \"vereda continua\" en el diseño de cruces peatonales se caracteriza por:", opts:["Bajar en todo su ancho al nivel de la calzada","Elevar la cota de la calzada al nivel de la acera en el ancho del paso","Requerir siempre una isla refugio","Prohibir el uso de banda táctil"], correct:1, why:"A diferencia de la vereda angosta (que baja), la vereda continua eleva la calzada, privilegiando la circulación peatonal."},
+ {q:"En la nomenclatura chilena de baldosas táctiles Minvu, el número \"1\" corresponde a:", opts:["Alerta/detención","Avance/circulación","Advertencia de peligro vehicular","Zona de descanso"], correct:1, why:"Minvu 1 = avance/circulación (líneas paralelas); Minvu 0 = alerta (botones/puntos)."},
+ {q:"¿En cuál de los siguientes casos se recomienda pavimento táctil de ALERTA o DETENCIÓN?", opts:["Itinerarios turísticos peatonales","Inicio y término de rampas y escaleras","Itinerarios hacia centros de servicios","Todas las anteriores"], correct:1, why:"Las otras dos opciones corresponden a pavimento de avance/circulación, no de alerta."},
+ {q:"¿Cuál es la altura máxima de la boca superior de un basurero accesible?", opts:["60 cm","80 cm","100 cm","120 cm"], correct:1, why:"El manual fija 80 cm para la boca superior y 100 cm para la boca lateral."},
+ {q:"¿Qué proporción mínima de teléfonos públicos debe ser accesible?", opts:["1 de cada 3","1 de cada 5","1 de cada 10","Todos deben serlo"], correct:1, why:"El manual exige que al menos 1 de cada 5 teléfonos públicos sea accesible."},
+ {q:"Un escaño o banco urbano accesible debe tener una altura de asiento aproximada de:", opts:["35 cm","45 cm","55 cm","65 cm"], correct:1, why:"45 cm de altura de asiento facilita el levantarse a personas mayores, junto con apoyabrazos a 25 cm."},
+ {q:"¿Cuál es la distancia mínima recomendada entre pilotes (bolardos) en una acera?", opts:["60 cm","75 cm","90 cm","120 cm"], correct:2, why:"90 cm de separación mínima; además nunca deben ubicarse en el centro de un rebaje de vereda."},
+ {q:"¿Cuál es la dimensión normativa mínima de un estacionamiento accesible?", opts:["250 x 400 cm","300 x 450 cm","360 x 500 cm","400 x 600 cm"], correct:2, why:"360 cm de ancho por 500 cm de largo es la dimensión mínima citada en el manual."},
+ {q:"Según la tabla de dotación citada (OGUC), con una dotación total de 51 a 200 estacionamientos, ¿cuántos deben ser accesibles?", opts:["1","2","3","4"], correct:2, why:"La tabla OGUC exige 3 estacionamientos accesibles en ese rango de dotación total."},
+ {q:"¿Qué ley chilena sanciona el uso indebido de un estacionamiento reservado para personas con discapacidad?", opts:["Ley 18.290 de Tránsito","Ley 20.422","Ley General de Urbanismo y Construcciones","Ley del Consumidor"], correct:0, why:"El manual cita la Ley 18.290 de Tránsito como la norma que sanciona esta infracción."},
+ {q:"En pasarelas peatonales, ¿qué pendiente permite el cruce independiente en silla de ruedas frente a una que exige ayuda de terceros?", opts:["8% permite cruce independiente; 12% exige ayuda","12% permite cruce independiente; 8% exige ayuda","Ambas exigen siempre ayuda","La pendiente no influye en la independencia"], correct:0, why:"El manual contrasta explícitamente ambos escenarios numéricos: 8% es autónomo, 12% requiere asistencia."},
+ {q:"¿Cuál es la altura mínima recomendada para una reja que impida el cruce peatonal a nivel de calzada junto a una pasarela?", opts:["100 cm","130 cm","170 cm","200 cm"], correct:2, why:"170 cm es la altura mínima citada para que la reja sea efectiva y desincentive el cruce a nivel."}
+]},
+{ id:"intro-is", title:"Introducción a Teoría de Integración Sensorial", meta:"L. Troncoso · 14 preguntas", items:[
+ {q:"¿Quién desarrolló la Teoría de Integración Sensorial y en qué década?", opts:["Jean Ayres, años 70","Winnie Dunn, años 80","Jean Piaget, años 60","Lois Bly, años 90"], correct:0, why:"El documento atribuye la teoría a Jean Ayres, desarrollada en la década de 1970."},
+ {q:"¿Cuáles son los 5 estímulos de \"procesamiento sensorial\" mencionados en los fundamentos?", opts:["Táctil, vestibular, propioceptivo, visual, auditivo","Gustativo, olfativo, interoceptivo, visual, auditivo","Táctil, gustativo, olfativo, visual, kinestésico","Vestibular, propioceptivo, interoceptivo, auditivo, gustativo"], correct:0, why:"Estos 5 son los estímulos explícitamente listados en la diapositiva de Fundamentos."},
+ {q:"La \"plasticidad neuronal\", según el documento, es la capacidad del sistema nervioso de:", opts:["Generar nuevas neuronas exclusivamente en la infancia","Reorganizarse y mejorar su integración sensorial mediante experiencias repetidas y significativas","Procesar únicamente estímulos visuales","Inhibir permanentemente respuestas motoras"], correct:1, why:"Es la definición textual de plasticidad neuronal dada en el documento."},
+ {q:"Frente a un procesamiento sensorial ineficiente, ¿cuál de las siguientes NO es una de las 3 áreas de respuesta desorganizada descritas?", opts:["Motoras","Cognitivas","Emocionales y conductuales","Digestivas"], correct:3, why:"El documento clasifica las respuestas desorganizadas en motoras, cognitivas y emocionales/conductuales; no menciona el área digestiva."},
+ {q:"¿Cuál es el objetivo terapéutico final descrito en el documento?", opts:["Potenciar la participación en ocupaciones significativas","La corrección postural exclusivamente","El aumento de la fuerza muscular","La memorización de rutinas"], correct:0, why:"Es el cuarto y último objetivo terapéutico listado, presentado como la meta final de la intervención."},
+ {q:"Según las \"intervenciones clave\" del documento, ¿qué actividades se asocian a la propiocepción?", opts:["Balanceos y columpios","Empujar, cargar y saltar","Texturas y juegos con arena/agua","Música y contacto visual"], correct:1, why:"El documento asigna balanceos/columpios a lo vestibular, y empujar/cargar/saltar a la propiocepción."},
+ {q:"¿Cuál de las 4 funciones del terapeuta corresponde a \"seleccionar actividades con propósito\"?", opts:["Evaluar el perfil sensorial del paciente","Integrar estímulos en tareas significativas, no solo \"dar estímulos\"","Diseñar ambientes ricos en estímulos","Facilitar respuestas adaptativas"], correct:1, why:"Esta función se define explícitamente como no limitarse a dar estímulos sino integrarlos en tareas con sentido."},
+ {q:"Según el ejemplo del documento, la actividad de \"cocinar\" combina qué sistemas sensoriales:", opts:["Visual y auditivo","Olfato, propiocepción y coordinación","Vestibular y gustativo únicamente","Interoceptivo y auditivo"], correct:1, why:"El documento da este ejemplo textual junto con 'pintar con los dedos' (táctil+visual) y 'juegos grupales' (auditivo+vestibular+social)."},
+ {q:"En el ámbito de aplicación pediátrico, ¿qué condiciones se mencionan explícitamente?", opts:["TEA, TDAH, parálisis cerebral","Diabetes, asma, obesidad","Miopía, estrabismo, cataratas","Escoliosis, cifosis, lordosis"], correct:0, why:"Son las tres condiciones pediátricas citadas como ámbito de aplicación de la teoría."},
+ {q:"¿Quién es la autora de \"La integración sensorial y el niño\" (edición en español, 2003), citada en la bibliografía?", opts:["A. J. Ayres","I. Beaudry Bellefeuille","G. Del Moral Orro","M. Á. Pastor Montaño"], correct:0, why:"Es la obra clásica de Ayres que fundamenta la teoría, según la propia bibliografía del documento."},
+ {q:"El \"problema central\" que aborda la teoría de integración sensorial, según el documento, es:", opts:["La dificultad para procesar y organizar la información sensorial del entorno y del propio cuerpo","La falta de fuerza muscular","El bajo rendimiento académico","Los trastornos del lenguaje expresivo"], correct:0, why:"Es la definición textual del problema central que da origen a la necesidad de intervención."},
+ {q:"¿Cuáles son los 4 resultados esperados de la intervención según el documento?", opts:["Organización del comportamiento, regulación emocional/conductual, mejora motora/cognitiva, participación ocupacional","Mejora de memoria, atención, lenguaje y cálculo","Aumento de peso, talla, fuerza y resistencia","Reducción de la ansiedad únicamente"], correct:0, why:"Son los 4 resultados esperados listados textualmente en la diapositiva correspondiente."},
+ {q:"Según las conclusiones del documento, procesar estímulos sensoriales es:", opts:["Un fin en sí mismo","Un medio para la participación en ocupaciones significativas","Irrelevante para la autonomía","Exclusivo de la infancia"], correct:1, why:"La conclusión marco del documento es que procesar estímulos es un medio, no un fin en sí mismo."},
+ {q:"¿Qué autora escribió \"Tengo duendes en las piernas\" (2008), sobre dificultades escolares e hiperactividad desde la teoría de integración sensorial?", opts:["I. Beaudry Bellefeuille","A. J. Ayres","Winnie Dunn","Jean Piaget"], correct:0, why:"Beaudry Bellefeuille (2008) es la autora citada en la bibliografía para esta obra."}
+]},
+{ id:"piaget", title:"El Juego en el Desarrollo Infantil (Piaget)", meta:"Manual TSEI, Unidad 2 · 20 preguntas", items:[
+ {q:"Según Piaget, ¿en qué rango de edad corresponde el estadio sensoriomotor y su juego predominante?", opts:["0-2 años, juego funcional o de ejercicio","2-6 años, juego simbólico","6-12 años, juego de reglas","0-1 año, juego de construcción"], correct:0, why:"El estadio sensoriomotor (0-2 años) tiene como juego predominante el funcional o de ejercicio."},
+ {q:"El juego simbólico es propio del estadio:", opts:["Sensoriomotor (0-2 años)","Preoperacional (2-6 años)","Operaciones concretas (6-12 años)","Operaciones formales"], correct:1, why:"El estadio preoperacional (2-6 años) tiene como juego predominante el simbólico."},
+ {q:"El juego de reglas, según Piaget, corresponde al estadio de las operaciones concretas, entre:", opts:["0 y 2 años","2 y 6 años","6 y 12 años","12 y 18 años"], correct:2, why:"El estadio de operaciones concretas (6-12 años) tiene como juego predominante el de reglas."},
+ {q:"Cuando aparece un nuevo tipo de juego en el desarrollo, el juego anterior:", opts:["Desaparece por completo","Se perfecciona y queda al servicio del juego posterior","Se detiene hasta la adultez","Se vuelve perjudicial"], correct:1, why:"El manual precisa que la secuencia es invariable pero los juegos anteriores no desaparecen: se perfeccionan y sirven al siguiente."},
+ {q:"El juego de construcción, según el documento, se caracteriza por:", opts:["Ser un estadio propio con edad de inicio y fin definida","Aparecer alrededor del primer año y desarrollarse simultáneamente a los demás tipos de juego","Aparecer solo después de los 6 años","Ser exclusivo del juego simbólico"], correct:1, why:"No es un estadio piagetiano: es transversal, aparece cerca del año de vida y acompaña a los demás tipos de juego."},
+ {q:"La \"reacción circular primaria\" (2-4 meses) se caracteriza por ser una conducta placentera repetida:", opts:["Sobre el propio cuerpo del bebé","Sobre objetos del entorno físico","Sobre otras personas","Sobre reglas sociales"], correct:0, why:"A diferencia de la secundaria (sobre el entorno), la primaria ocurre sobre el propio cuerpo (ej. chuparse la mano)."},
+ {q:"La \"reacción circular secundaria\" (4-8 meses) se diferencia de la primaria en que ocurre:", opts:["Sobre el propio cuerpo","Sobre el entorno físico y social","Exclusivamente en el sueño","Solo con adultos desconocidos"], correct:1, why:"La secundaria traslada la conducta repetida hacia objetos y personas del entorno."},
+ {q:"La imitación diferida (18-24 meses) se define como la capacidad de imitar:", opts:["Solo en presencia del modelo","Acciones en ausencia total del modelo, abriendo la puerta al juego simbólico","Exclusivamente sonidos, nunca acciones","Solamente a otros bebés de la misma edad"], correct:1, why:"El manual señala que este tipo de imitación diferida es la que habilita el desarrollo del juego simbólico."},
+ {q:"Según la Tabla 2.1, el \"Nivel III\" del juego simbólico (22-24 meses) se caracteriza por:", opts:["Inicios de representación de un rol, con secuencias de 2-3 acciones a menudo ilógicas","Sustitución plena de objetos y planificación completa del juego","Juego exclusivamente individual sin ningún tipo de simulación","Ausencia total de objetos en el juego"], correct:0, why:"Es la descripción exacta del Nivel III de la tabla de evolución del juego simbólico."},
+ {q:"¿A partir de qué edad los niños logran \"sustitución plena de objetos\" (una caja es una cama) y planificación del juego simbólico?", opts:["12 meses","2 años","4 años","8 años"], correct:2, why:"El Nivel V de la Tabla 2.1 ubica la sustitución plena y la planificación a partir de los 4 años."},
+ {q:"El juego paralelo, en la clasificación de sociabilidad del juego, es más frecuente entre:", opts:["Antes de los 2 años","2 y 4 años","4 y 6 años","6 y 12 años"], correct:1, why:"El documento sitúa el juego paralelo como más frecuente entre los 2 y los 4 años."},
+ {q:"El juego compartido (coordinado, organizado entre todos) se observa a partir de:", opts:["1 año","2 años","4 años","8 años"], correct:2, why:"El manual indica que el juego compartido se observa a partir de los 4 años."},
+ {q:"Según el \"juego de las canicas\" analizado por Piaget, en la Etapa 2 (2-5 años) la conciencia de la regla es:", opts:["Considerada obligatoria e inmodificable","Acatada como una forma de jugar pero NO considerada obligatoria","Inexistente por completo","Idéntica a la de un adulto"], correct:1, why:"En esta etapa el niño recibe y acata la regla, pero aún no la vive como obligatoria (juego paralelo, sin buscar ganar)."},
+ {q:"¿A partir de qué edad la regla del juego se vuelve \"obligatoria\" y de \"verdad absoluta\" para el niño, según Piaget?", opts:["2 años","4 años","6-7 años","11-12 años"], correct:2, why:"La Etapa 3 (desde los 6-7 años) es cuando la regla se vive como obligatoria e inmodificable."},
+ {q:"La toma de conciencia de que las reglas son un acuerdo explícito entre jugadores (y no una verdad absoluta) solo es posible, según el documento, a partir de:", opts:["4-5 años","6-7 años","8-9 años","11-12 años"], correct:3, why:"El manual fija este hito metacognitivo específicamente entre los 11 y 12 años."},
+ {q:"Respecto al juego de construcción, ¿qué tipo de construcción precede a la otra según el \"dato curioso\" del documento?", opts:["La horizontal precede a la vertical","La vertical precede a la horizontal","Ambas emergen simultáneamente","No hay una secuencia definida"], correct:1, why:"El documento señala explícitamente que la construcción vertical (torres) precede a la horizontal (trenes, encajes)."},
+ {q:"Los \"argumentos-resumen de la realidad social\" del juego simbólico (jugar a las tiendas o al colegio) se diferencian de los inventados por cada niño en que:", opts:["Solo exigen recordar roles ya vividos, mientras los inventados requieren negociación explícita","Son exclusivos de los adultos","Los inventados nunca se repiten","No hay ninguna diferencia real"], correct:0, why:"Los primeros se apoyan en la referencia a la vida real conocida por todos; los inventados exigen que alguien dirija hasta que el grupo los aprenda."},
+ {q:"Según los estudios citados, los niños que participan en juego libre (frente al dirigido) desarrollan:", opts:["Menor contacto con sus pares","Más contactos físicos con compañeros y mejores habilidades para resolver conflictos de forma autónoma","Mayor dependencia de los adultos","Ningún efecto diferenciador"], correct:1, why:"El recuadro '¿Sabías que...?' cita estudios que asocian el juego libre a mayor autonomía y contacto entre pares."},
+ {q:"¿Cuál de las siguientes NO es una de las funciones del educador en su intervención según el documento?", opts:["Configurar el escenario de los juegos","Crear un ambiente relajado y acogedor","Imponer siempre el mismo juego a todo el grupo","Observar y registrar el proceso de juego"], correct:2, why:"El propio test del manual aclara que la actitud del educador NO necesita ser directiva."},
+ {q:"El concepto piagetiano de \"unir un significante a un significado\" en el juego simbólico se ilustra con el ejemplo de:", opts:["Tumbarse y cerrar los ojos para representar \"dormir\"","Sumar números en una pizarra","Memorizar una canción","Resolver un rompecabezas de lógica"], correct:0, why:"Es el ejemplo textual que da el manual para explicar este concepto piagetiano aplicado al juego."}
+]},
+{ id:"bly", title:"Componentes del Desarrollo Motor Típico y Atípico", meta:"Lois Bly · 20 preguntas", items:[
+ {q:"Según Lois Bly, el desarrollo motor del control de tronco progresa en la secuencia de planos:", opts:["Transversal → frontal → sagital","Sagital → frontal → transversal","Frontal → sagital → transversal","No sigue una secuencia de planos"], correct:1, why:"El texto establece esta progresión exacta: primero sagital, luego frontal, luego transversal."},
+ {q:"Un principio central del desarrollo típico señalado por Bly es que:", opts:["La flexión antigravitatoria axial precede siempre a la extensión antigravitatoria","La extensión antigravitatoria axial se desarrolla antes que la flexión antigravitatoria axial","Ambas se desarrollan de forma simultánea siempre","Ninguna de las dos se desarrolla en el primer año"], correct:1, why:"Es un principio repetido en todo el texto: la extensión antigravitatoria precede a la flexión antigravitatoria."},
+ {q:"¿A qué edad desaparecen gradualmente la bipedestación primaria y la marcha automática (reflejos)?", opts:["Entre la 4ª y 6ª semana de vida","A los 6 meses","Al año de vida","Nunca desaparecen"], correct:0, why:"El texto ubica la desaparición gradual de estos reflejos primitivos entre la 4ª y 6ª semana."},
+ {q:"La \"astasia-abasia\" (descoordinación motora y mala orientación de los pies en bipedestación) se describe como típica a los:", opts:["1 mes","2 meses","6 meses","12 meses"], correct:1, why:"A los 2 meses, cuando ya no hay marcha automática, aparece este patrón transitorio típico."},
+ {q:"El giro de prono a supino ocurre típicamente (aunque de forma generalmente incontrolada) alrededor de los:", opts:["3 meses","5 meses","8 meses","10 meses"], correct:1, why:"A los 5 meses, un desplazamiento excesivo de peso en prono provoca el giro accidental hacia supino."},
+ {q:"La sedestación independiente con espalda recta y \"chin tuck\" se alcanza típicamente a los:", opts:["4 meses","6 meses","9 meses","12 meses"], correct:1, why:"El hito de sedente independiente con buen control axial se describe a los 6 meses."},
+ {q:"El gateo recíproco, que requiere contra-rotación de las cinturas escapular y pélvica, emerge típicamente como locomoción principal alrededor de los:", opts:["5 meses","8 meses","11 meses","14 meses"], correct:1, why:"A los 8 meses el gateo recíproco se vuelve el medio principal de locomoción independiente."},
+ {q:"Según la Tabla II del \"Equipo Suizo\" (Quinton y Kong), el término actual \"Impedimento Primario\" corresponde al término histórico:", opts:["Compensaciones","Problema Original","Patrones por hábito","Deformidades"], correct:1, why:"La tabla de correspondencia terminológica equipara 'Problema Original' con 'Impedimento Primario'."},
+ {q:"El \"Impedimento Secundario\" en la terminología actual corresponde al término histórico del Equipo Suizo:", opts:["Problema Original","Compensaciones","Feedforward","Cirugías"], correct:1, why:"'Compensaciones' es el término histórico equivalente a 'Impedimento Secundario'."},
+ {q:"¿Cuál es la secuencia causal descrita en el proceso de desarrollo motor atípico?", opts:["Deformidades → Cirugías → Impedimento 1° → Impedimento 2°","Impedimento Primario → Impedimento Secundario → Patrones por hábito/Feedforward → Deformidades → Cirugías","Cirugías → Impedimento Primario → Feedforward","No existe una secuencia causal definida"], correct:1, why:"Esta es la cadena causal central del marco conceptual del Equipo Suizo retomado por Bly."},
+ {q:"El concepto de \"fijación\" (Bernstein) se describe en el desarrollo TÍPICO como:", opts:["Siempre patológica desde su aparición","Una etapa normal y transitoria hasta que emerge estabilidad sinérgica muscular normal","Exclusiva del desarrollo atípico","Un signo de retraso madurativo severo"], correct:1, why:"En desarrollo típico la fijación es una estrategia normal y transitoria, no patológica."},
+ {q:"En el desarrollo ATÍPICO, la fijación se diferencia de la típica en que:", opts:["Nunca ocurre","Se vuelve crónica, se integra al feedforward y bloquea el desarrollo motor típico","Siempre desaparece espontáneamente","Mejora la estabilidad sinérgica muscular normal"], correct:1, why:"A diferencia de la fijación típica transitoria, en el desarrollo atípico se cronifica y bloquea el progreso motor."},
+ {q:"¿Cuál es la compensación principal descrita ante la hiperextensión de cuello en el desarrollo atípico?", opts:["Elevación de hombros (escápulas) para estabilizar la cabeza","Flexión excesiva de rodillas","Rotación externa de cadera","Aumento de la sedestación en W"], correct:0, why:"La elevación escapular crónica es la compensación principal descrita para estabilizar la cabeza hiperextendida."},
+ {q:"Entre las consecuencias de la elevación crónica de hombros como fijación, el texto menciona específicamente:", opts:["Mejora del seguimiento visual binocular","Contribución a la cifosis torácica y problemas motores orales (babeo)","Aumento de la extensión activa de tronco","Prevención de la subluxación de cadera"], correct:1, why:"Bly describe esta fijación como causa de cifosis torácica y de problemas motores orales, incluyendo el babeo."},
+ {q:"La asimetría de cabeza y cuello persistente en el desarrollo atípico puede derivar mecánicamente en:", opts:["Mejora de la conciencia corporal","Subluxación o luxación de cadera del lado nucal","Aumento simétrico de fuerza en ambos hemicuerpos","Prevención de escoliosis"], correct:1, why:"La rotación pélvica constante asociada a la asimetría cefálica predispone a subluxación/luxación de cadera."},
+ {q:"En el tono bajo con anteversión pélvica, la postura de \"piernas en posición de rana\" mantenida en prono cumple la función de:", opts:["Favorecer el desplazamiento lateral de peso","Bloquear el desplazamiento del centro de masa","Mejorar la extensión activa de cadera","Facilitar el gateo recíproco"], correct:1, why:"Esta postura fijada bloquea el desplazamiento del centro de masa, impidiendo el giro y el desplazamiento lateral."},
+ {q:"En el tono alto con retroversión pélvica, ¿qué paradoja clínica describe Bly respecto al niño mayor?", opts:["El niño muy extendido de bebé a menudo se vuelve muy flexionado al crecer, por compensaciones en sedente","El niño flexionado de bebé siempre permanece flexionado","No existen paradojas en el desarrollo atípico","El tono alto se resuelve espontáneamente sin intervención"], correct:0, why:"Es la paradoja clínica explícita: la extensión temprana no balanceada termina generando flexión compensatoria en el niño mayor."},
+ {q:"El \"salto de conejo\" (mover ambas piernas juntas) en el desarrollo atípico es una compensación por falta de:", opts:["Control de cabeza","Disociación de extremidades inferiores","Visión binocular","Fuerza en extremidades superiores"], correct:1, why:"Al no lograr disociar cada pierna, el niño mueve ambas juntas como compensación del gateo recíproco típico."},
+ {q:"¿Quién fundamenta históricamente el marco de \"Problema Original vs. Compensaciones\" citado por Bly (apuntes no publicados, 1976 y 1978)?", opts:["Mary Quinton y Elsbeth Kong","Jean Ayres y Winnie Dunn","Jean Piaget y B. Inhelder","Sherrington y Bobath"], correct:0, why:"Bly atribuye este marco terminológico al 'Equipo Suizo': la fisioterapeuta Mary Quinton y la Dra. Elsbeth Kong."},
+ {q:"Según Sahrmann, citada por Bly, la clave para un diagnóstico e intervención eficaz es:", opts:["Tratar únicamente el síntoma más visible","La identificación de todos los impedimentos que contribuyen a un síndrome de deficiencia de movimiento específico","Aplicar siempre cirugía correctiva temprana","Evitar la evaluación clínica directa"], correct:1, why:"Es la cita textual de Sahrmann reproducida por Bly en el análisis del proceso atípico."}
+]},
+{ id:"disfuncion-is", title:"Disfunción de Integración Sensorial", meta:"L. Troncoso · 18 preguntas", items:[
+ {q:"¿Con cuántos sentidos trabaja el modelo presentado en el documento (no los 5 tradicionales)?", opts:["5","6","7","8"], correct:2, why:"El documento trabaja con 7 sentidos: visual, auditivo, olfativo, gustativo, táctil, propioceptivo y vestibular."},
+ {q:"¿Dónde se ubica anatómicamente el sistema vestibular según el documento?", opts:["Oído interno","Corteza occipital","Cerebelo únicamente","Nervio óptico"], correct:0, why:"El documento define al sistema vestibular como situado en el oído interno."},
+ {q:"El sistema propioceptivo permite conocer la posición, movimiento y fuerza del cuerpo:", opts:["Únicamente mirándose en un espejo","Sin necesidad de mirarnos","Solo durante el sueño","Solo en la infancia"], correct:1, why:"Es la definición textual: propiocepción = conocer el cuerpo 'sin necesidad de mirarnos', en contraste con lo visual."},
+ {q:"Según la cita atribuida a Jean Ayres (1989), la integración sensorial organiza las sensaciones del cuerpo y el ambiente para:", opts:["Hacer posible la utilización del cuerpo efectivamente en el ambiente","Memorizar información académica","Desarrollar el lenguaje escrito","Mejorar la audición"], correct:0, why:"Es la cita textual de Ayres (1989) reproducida en el documento."},
+ {q:"Según Omairi (2014), citado en el documento, para considerar un trastorno de Integración Sensorial debe existir:", opts:["Un diagnóstico genético confirmado","Perjuicio ocupacional que interfiera en la calidad de vida del niño/a","Un puntaje bajo en un test de inteligencia","Ausencia total de juego"], correct:1, why:"Es el criterio diferenciador citado textualmente: sin perjuicio ocupacional, no se considera trastorno."},
+ {q:"¿Cuáles son los 3 procesos del SNC involucrados en la disfunción de integración sensorial?", opts:["Registrar, modular, discriminar","Memorizar, planificar, ejecutar","Inhibir, excitar, sincronizar","Atender, codificar, recuperar"], correct:0, why:"El documento los presenta como los tres procesos centrales del SNC en la disfunción de IS."},
+ {q:"La modulación sensorial se define como el proceso por el cual el SNC adapta las respuestas ajustando:", opts:["Intensidad, frecuencia, duración, complejidad y novedad del estímulo","Exclusivamente el volumen del sonido","Solo la temperatura corporal","Solo la velocidad de reacción motora"], correct:0, why:"Estos 5 parámetros son los que el documento asocia explícitamente a la modulación sensorial."},
+ {q:"Según el documento, la hiposensibilidad se caracteriza porque el cerebro:", opts:["Se sobreexcita con la información recibida","Tarda más o necesita más estimulación para comprender y procesar la información","Bloquea completamente toda información sensorial","Procesa la información de forma acelerada y precisa"], correct:1, why:"Es la definición textual de hiposensibilidad, en contraste con la hipersensibilidad (que se sobreexcita)."},
+ {q:"La \"inseguridad gravitacional\" y la \"aversión al movimiento\" son subtipos de:", opts:["Hiporresponsividad táctil","Hiperresponsividad vestibular","Discriminación propioceptiva","Modulación gustativa"], correct:1, why:"Ambos términos se presentan como manifestaciones específicas de hiperresponsividad del sistema vestibular."},
+ {q:"Un niño que rechaza el contacto físico, no tolera cortarse el pelo/uñas y rechaza texturas de comida presenta signos de:", opts:["Hiporresponsividad táctil","Hiperresponsividad táctil","Hiporresponsividad vestibular","Discriminación visual alterada"], correct:1, why:"Estos síntomas corresponden a la columna de hiperresponsividad del sistema táctil en la tabla del documento."},
+ {q:"Un niño con hiporresponsividad propioceptiva suele ser descrito, según el documento, como:", opts:["\"Torpe\", con dificultad en tareas de manipulación y que rompe objetos sin intención","Hipersensible al tacto","Con aversión extrema al movimiento","Con discriminación auditiva superior al promedio"], correct:0, why:"Es la descripción textual de las dificultades propioceptivas listadas en el documento."},
+ {q:"Frente a un perfil de hiperrespuesta sensorial, la regla de intervención indicada en el documento es:", opts:["Aumentar la intensidad de los estímulos","Disminuir los estímulos","Estructurar los estímulos","Ignorar el perfil sensorial"], correct:1, why:"El documento asigna 'disminuir estímulos' al perfil de hiperrespuesta, frente a 'aumentar intensidad' en hiporrespuesta."},
+ {q:"Frente a un perfil de búsqueda sensorial (sensory seeking), la regla de intervención es:", opts:["Disminuir estímulos","Aumentar intensidad","Estructurar los estímulos","Eliminar toda estimulación"], correct:2, why:"El tercer perfil (búsqueda) se maneja estructurando los estímulos, distinto de hiper e hiporrespuesta."},
+ {q:"La estrategia de \"Integración Sensorial\" como enfoque de intervención se diferencia de la \"Regulación Sensorial\" en que la primera:", opts:["Realiza actividades lúdicas y desafiantes para organizar información sensorial, mientras la regulación usa estímulos puntuales para mantener el nivel de alerta","Son exactamente lo mismo","No usa ningún equipamiento","Es exclusiva de adultos"], correct:0, why:"El documento distingue ambos enfoques exactamente en estos términos."},
+ {q:"¿Cuál de los siguientes NO es un ejemplo de actividad de integración sensorial mencionado en el documento?", opts:["Columpios y balancines","Piscinas de pelotas y escalada","Circuitos motores","Pausas sensoriales con música suave"], correct:3, why:"Las pausas sensoriales con música suave pertenecen a la categoría de regulación sensorial, no de integración sensorial."},
+ {q:"Entre las estrategias de adaptación ambiental para disminuir la sobrecarga sensorial, el documento menciona:", opts:["Aumentar el ruido ambiental","Reducir ruido, controlar luces y organizar visualmente el espacio","Eliminar toda anticipación mediante apoyos visuales","Evitar cualquier estructura en la rutina"], correct:1, why:"Son ejemplos textuales listados como adaptaciones ambientales del documento."},
+ {q:"¿Cuál de las siguientes NO es una de las 4 áreas de impacto funcional de la disfunción de integración sensorial?", opts:["Dificultades en atención","Problemas conductuales","Bajo rendimiento escolar","Pérdida auditiva progresiva"], correct:3, why:"Las 4 áreas listadas son atención, conducta, rendimiento escolar y alteración del juego/participación; no hay mención a pérdida auditiva."},
+ {q:"Las condiciones idóneas para el desarrollo según Jean Ayres (1984) requieren 3 componentes. ¿Cuál de los siguientes NO es uno de ellos?", opts:["Un ambiente que provea estímulos que faciliten una respuesta adaptativa","Capacidad de procesamiento sensorial adecuado","Capacidad de producir una respuesta adaptativa evidenciable en áreas motora, cognitiva, social y emocional","Un coeficiente intelectual superior al promedio"], correct:3, why:"Los 3 componentes de Ayres (1984) no incluyen ningún requisito de coeficiente intelectual."}
+]}
+];
+
+const $main = document.getElementById('main');
+const $toc = document.getElementById('toc');
+const $sources = document.getElementById('sourcesList');
+let total = 0, answered = 0, correctCount = 0;
+
+DATA.forEach((sec, si) => {
+  total += sec.items.length;
+  const a = document.createElement('a');
+  a.href = '#' + sec.id;
+  a.innerHTML = '<b>' + String(si+1).padStart(2,'0') + '</b>' + sec.title;
+  $toc.appendChild(a);
+
+  const s = document.createElement('span');
+  s.textContent = sec.title.split(' — ')[0].split(' (')[0];
+  $sources.appendChild(s);
+
+  const section = document.createElement('section');
+  section.className = 'block';
+  section.id = sec.id;
+  section.innerHTML = '<div class="block-head"><span class="block-num">' + String(si+1).padStart(2,'0') + '</span><h2>' + sec.title + '</h2></div><div class="block-meta">' + sec.meta + '</div>';
+  const cardsHost = document.createElement('div');
+  section.appendChild(cardsHost);
+
+  sec.items.forEach((item, qi) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const qid = sec.id + '-' + qi;
+    card.innerHTML =
+      '<div class="qhead"><span class="qnum">' + (qi+1) + '.</span><span class="qtext">' + item.q + '</span></div>' +
+      '<div class="opts" id="opts-' + qid + '"></div>' +
+      '<div class="why" id="why-' + qid + '"></div>' +
+      '<div class="qfoot"><button type="button" data-qid="' + qid + '" class="revealBtn">Ver respuesta</button></div>';
+    cardsHost.appendChild(card);
+
+    const optsHost = card.querySelector('#opts-' + qid);
+    const letters = ['A','B','C','D'];
+    item.opts.forEach((optText, oi) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'opt';
+      btn.innerHTML = '<span class="let">' + letters[oi] + '</span><span>' + optText + '</span>';
+      btn.addEventListener('click', () => answerQuestion(sec.id, qi, oi, item));
+      optsHost.appendChild(btn);
+    });
+  });
+
+  $main.appendChild(section);
+});
+
+document.getElementById('stTotal').textContent = total;
+
+function renderWhy(qid, item){
+  const why = document.getElementById('why-' + qid);
+  why.innerHTML = '<b>Respuesta correcta: ' + ['A','B','C','D'][item.correct] + '.</b> ' + item.why;
+  why.classList.add('show');
+}
+
+function answerQuestion(secId, qi, chosenIdx, item){
+  const qid = secId + '-' + qi;
+  const optsHost = document.getElementById('opts-' + qid);
+  if (optsHost.dataset.answered) return;
+  optsHost.dataset.answered = '1';
+  answered++;
+  if (chosenIdx === item.correct) correctCount++;
+  [...optsHost.children].forEach((btn, oi) => {
+    btn.disabled = true;
+    if (oi === item.correct) btn.classList.add('correct');
+    else if (oi === chosenIdx) btn.classList.add('wrong');
+  });
+  renderWhy(qid, item);
+  updateStats();
+}
+
+function updateStats(){
+  document.getElementById('stAnswered').textContent = answered;
+  document.getElementById('stCorrect').textContent = correctCount;
+}
+
+document.getElementById('btnRevealAll').addEventListener('click', () => {
+  DATA.forEach(sec => {
+    sec.items.forEach((item, qi) => {
+      const qid = sec.id + '-' + qi;
+      renderWhy(qid, item);
+      const optsHost = document.getElementById('opts-' + qid);
+      [...optsHost.children].forEach((btn, oi) => {
+        if (oi === item.correct) btn.classList.add('correct');
+      });
+    });
+  });
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  location.reload();
+});
+
+document.querySelectorAll('.revealBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const qid = btn.dataset.qid;
+    const [secId, qi] = [qid.split('-').slice(0,-1).join('-'), qid.split('-').slice(-1)[0]];
+    const sec = DATA.find(s => s.id === secId);
+    const item = sec.items[qi];
+    renderWhy(qid, item);
+    const optsHost = document.getElementById('opts-' + qid);
+    [...optsHost.children].forEach((b, oi) => { if (oi === item.correct) b.classList.add('correct'); });
+  });
+});
+</script>
